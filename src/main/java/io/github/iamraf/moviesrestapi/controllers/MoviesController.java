@@ -2,12 +2,11 @@ package io.github.iamraf.moviesrestapi.controllers;
 
 import io.github.iamraf.moviesrestapi.entities.Movie;
 import io.github.iamraf.moviesrestapi.exceptions.MovieNotFoundException;
+import io.github.iamraf.moviesrestapi.exceptions.PageNotFoundException;
 import io.github.iamraf.moviesrestapi.services.MoviesService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +30,16 @@ public class MoviesController {
     public Movie getMovie(@PathVariable Integer id) {
         return service.findMovieById(id)
                 .orElseThrow(() -> new MovieNotFoundException("Movie not found"));
+    }
+
+    @GetMapping(params = {"page", "size"})
+    public List<Movie> getPagedMovies(@RequestParam("page") int page, @RequestParam("size") int size) {
+        Page<Movie> resultPage = service.findAll(page, size);
+
+        if (page > resultPage.getTotalPages()) {
+            throw new PageNotFoundException("Page not found");
+        }
+
+        return resultPage.getContent();
     }
 }

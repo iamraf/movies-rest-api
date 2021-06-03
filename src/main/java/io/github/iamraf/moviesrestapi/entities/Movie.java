@@ -10,6 +10,7 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "movie_sequence")
     private int id;
     private String title;
+    @Column(length = 512)
     private String description;
     private int year;
 
