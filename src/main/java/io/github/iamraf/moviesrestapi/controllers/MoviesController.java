@@ -3,6 +3,7 @@ package io.github.iamraf.moviesrestapi.controllers;
 import io.github.iamraf.moviesrestapi.entities.Movie;
 import io.github.iamraf.moviesrestapi.exceptions.MovieNotFoundException;
 import io.github.iamraf.moviesrestapi.exceptions.PageNotFoundException;
+import io.github.iamraf.moviesrestapi.exceptions.SortTableNotSupportedException;
 import io.github.iamraf.moviesrestapi.services.MoviesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,15 @@ public class MoviesController {
         return service.findAll();
     }
 
+    @GetMapping(params = {"sort"})
+    public List<Movie> getSortedMovies(@RequestParam("sort") String sort) {
+        if (!sort.equals("title") && !sort.equals("year")) {
+            throw new SortTableNotSupportedException("Table specified not supported");
+        }
+
+        return service.findAll(sort);
+    }
+
     @GetMapping(value = {"/movie/{id}"})
     public Movie getMovie(@PathVariable Integer id) {
         return service.findMovieById(id)
@@ -35,6 +45,21 @@ public class MoviesController {
     @GetMapping(params = {"page", "size"})
     public List<Movie> getPagedMovies(@RequestParam("page") int page, @RequestParam("size") int size) {
         Page<Movie> resultPage = service.findAll(page, size);
+
+        if (page > resultPage.getTotalPages()) {
+            throw new PageNotFoundException("Page not found");
+        }
+
+        return resultPage.getContent();
+    }
+
+    @GetMapping(params = {"page", "size", "sort"})
+    public List<Movie> getPagedMovies(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort) {
+        if (!sort.equals("title") && !sort.equals("year")) {
+            throw new SortTableNotSupportedException("Table specified not supported");
+        }
+
+        Page<Movie> resultPage = service.findAll(page, size, sort);
 
         if (page > resultPage.getTotalPages()) {
             throw new PageNotFoundException("Page not found");

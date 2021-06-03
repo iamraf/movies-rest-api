@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,12 +26,22 @@ public class MoviesService {
         return repository.findAll();
     }
 
+    public List<Movie> findAll(String sort) {
+        return repository.findAll(Sort.by(sort));
+    }
+
     public Optional<Movie> findMovieById(int id) {
         return repository.findById(id);
     }
 
     public Page<Movie> findAll(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
+
+        return repository.findAll(pageable);
+    }
+
+    public Page<Movie> findAll(int page, int size, String sort) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort));
 
         return repository.findAll(pageable);
     }
