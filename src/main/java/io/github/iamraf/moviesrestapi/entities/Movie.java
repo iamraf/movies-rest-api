@@ -23,13 +23,6 @@ public class Movie {
         this.year = year;
     }
 
-    public Movie(int id, String title, String description, int year) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.year = year;
-    }
-
     public int getId() {
         return id;
     }
@@ -44,5 +37,17 @@ public class Movie {
 
     public int getYear() {
         return year;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 }

@@ -67,4 +67,19 @@ public class MoviesController {
 
         return resultPage.getContent();
     }
+
+    @PostMapping
+    public void addMovie(@RequestBody Movie movie) {
+        service.add(movie);
+    }
+
+    @DeleteMapping(path = "{id}")
+    public void deleteMovie(@PathVariable("id") int id) {
+        service.delete(id);
+    }
+
+    @PutMapping
+    public void updateMovie(@RequestBody Movie movie) {
+        service.update(movie);
+    }
 }
