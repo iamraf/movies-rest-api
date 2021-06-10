@@ -50,10 +50,13 @@ public class MoviesService {
     }
 
     public void add(Movie movie) {
-        Movie result = repository.findMovieByTitleAndDescription(movie.getTitle(), movie.getDescription())
-                .orElseThrow(() -> new MovieAlreadyExistsException("Movie already exist"));
+        Optional<Movie> result = repository.findMovieByTitleAndDescription(movie.getTitle(), movie.getDescription());
 
-        repository.save(result);
+        if (result.isPresent()) {
+            throw new MovieAlreadyExistsException("Movie already exist");
+        }
+
+        repository.save(movie);
     }
 
     public void delete(int id) {

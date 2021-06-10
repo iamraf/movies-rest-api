@@ -1,7 +1,9 @@
 package io.github.iamraf.moviesrestapi.config;
 
 import io.github.iamraf.moviesrestapi.entities.Movie;
+import io.github.iamraf.moviesrestapi.entities.User;
 import io.github.iamraf.moviesrestapi.repositories.MoviesRepository;
+import io.github.iamraf.moviesrestapi.repositories.UsersRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,10 +11,10 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 @Configuration
-public class MoviesConfig {
+public class DataConfig {
 
     @Bean
-    CommandLineRunner commandLineRunner(MoviesRepository repository) {
+    CommandLineRunner commandLineRunner(MoviesRepository moviesRepository, UsersRepository usersRepository) {
         return args -> {
             List<Movie> movies = List.of(
                     new Movie("Army of the Dead", "Following a zombie outbreak in Las Vegas, a group of mercenaries take the ultimate gamble, venturing into the quarantine zone to pull off the greatest heist ever attempted.", 2021),
@@ -36,7 +38,13 @@ public class MoviesConfig {
                     new Movie("Nobody", "A bystander who intervenes to help a woman being harassed by a group of men becomes the target of a vengeful drug lord.", 2021),
                     new Movie("Zack Snyder's Justice League", "Determined to ensure Superman's ultimate sacrifice was not in vain, Bruce Wayne aligns forces with Diana Prince with plans to recruit a team of metahumans to protect the world from an approaching threat of catastrophic proportions.", 2021));
 
-            repository.saveAll(movies);
+            moviesRepository.saveAll(movies);
+
+            List<User> users = List.of(
+                    new User("test", "test", "test@test.com"),
+                    new User("Kappa", "Keepo", "kappakeepo@gmail.com"));
+
+            usersRepository.saveAll(users);
         };
     }
 }
