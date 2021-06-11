@@ -4,14 +4,23 @@ import io.github.iamraf.moviesrestapi.entities.Movie;
 import io.github.iamraf.moviesrestapi.entities.User;
 import io.github.iamraf.moviesrestapi.repositories.MoviesRepository;
 import io.github.iamraf.moviesrestapi.repositories.UsersRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
 @Configuration
 public class DataConfig {
+
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public DataConfig(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Bean
     CommandLineRunner commandLineRunner(MoviesRepository moviesRepository, UsersRepository usersRepository) {
@@ -41,8 +50,8 @@ public class DataConfig {
             moviesRepository.saveAll(movies);
 
             List<User> users = List.of(
-                    new User("test", "test", "test@test.com"),
-                    new User("Kappa", "Keepo", "kappakeepo@gmail.com"));
+                    new User("test", passwordEncoder.encode("test"), "test@test.com"),
+                    new User("Kappa", passwordEncoder.encode("Keepo"), "kappakeepo@gmail.com"));
 
             usersRepository.saveAll(users);
         };
